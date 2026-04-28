@@ -1,43 +1,55 @@
-# Simple S3 bucket to demonstrate GitHub Actions automation
 terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
+required_providers {
+aws = {
+source  = "hashicorp/aws"
+version = "~> 5.0"
+}
+random = {
+source  = "hashicorp/random"
+version = "~> 3.0"
+}
+}
 }
 
 provider "aws" {
-  region = "eu-west-2"
+region = "eu-west-2"
 }
 
 variable "bucket_suffix" {
-  description = "Unique suffix for bucket name (use your initials)"
-  type        = string
-  default     = "va"  # CHANGE THIS to your initials!
+description = "Unique suffix for bucket name (use your initials)"
+type        = string
+default     = "va"  # <-- change this
 }
 
-# S3 Bucket - using fixed name to prevent duplicates
+variable "environment" {
+description = "Deployment environment"
+type        = string
+default     = "dev"
+}
+
+resource "random_id" "bucket_suffix" {
+byte_length = 4
+}
+
 resource "aws_s3_bucket" "demo" {
-  bucket = "cloudburst-demo-${var.bucket_suffix}"
+bucket = "cloudburst-${var.environment}-${var.bucket_suffix}-${random_id.bucket_suffix.hex}"
 
-  tags = {
-    Name        = "CloudBurst Demo Bucket"
-    Environment = "dev"
-    ManagedBy   = "terraform"
-    DeployedBy  = "github-actions"
-    TestTag = "pr-comment-test"
-  }
+tags = {
+Name        = "CloudBurst ${var.environment} Bucket"
+Environment = var.environment
+ManagedBy   = "terraform"
+DeployedBy  = "github-actions"
+Testag      = "pr-comment-test"  #
+}
 }
 
-# Output the bucket name
 output "bucket_name" {
-  description = "Name of the created S3 bucket"
-  value       = aws_s3_bucket.demo.bucket
+description = "Name of the created S3 bucket"
+value       = aws_s3_bucket.demo.bucket
 }
 
-output "bucket_arn" {
-  description = "ARN of the created S3 bucket"
-  value       = aws_s3_bucket.demo.arn
+output "environment" {
+description = "Deployment environment"
+value       = var.environment
 }
+
