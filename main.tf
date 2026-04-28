@@ -18,7 +18,7 @@ region = "eu-west-2"
 variable "bucket_suffix" {
 description = "Unique suffix for bucket name (use your initials)"
 type        = string
-default     = "va"  # <-- change this
+default     = "va"
 }
 
 variable "environment" {
@@ -39,7 +39,7 @@ Name        = "CloudBurst ${var.environment} Bucket"
 Environment = var.environment
 ManagedBy   = "terraform"
 DeployedBy  = "github-actions"
-Testag      = "pr-comment-test"  #
+TestTag     = "pr-comment-test"
 }
 }
 
@@ -52,4 +52,3 @@ output "environment" {
 description = "Deployment environment"
 value       = var.environment
 }
-
