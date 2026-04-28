@@ -1,3 +1,4 @@
+# Simple S3 bucket to demonstrate GitHub Actions automation
 terraform {
   required_providers {
     aws = {
@@ -17,35 +18,26 @@ variable "bucket_suffix" {
   default     = "va"  # CHANGE THIS to your initials!
 }
 
-variable "environment" {
-  description = "Deployment environment"
-  type        = string
-  default     = "dev"
-}
-
-resource "random_id" "bucket_suffix" {
-  byte_length = 4
-}
-
+# S3 Bucket - using fixed name to prevent duplicates
 resource "aws_s3_bucket" "demo" {
-  bucket = "cloudburst-${var.environment}-${var.bucket_suffix}"
+  bucket = "cloudburst-demo-${var.bucket_suffix}"
 
   tags = {
-    Name        = "CloudBurst ${var.environment} Bucket"
-    Environment = var.environment
+    Name        = "CloudBurst Demo Bucket"
+    Environment = "dev"
     ManagedBy   = "terraform"
     DeployedBy  = "github-actions"
-    TestTag = "pr-comment-test
-    "
+    TestTag = "pr-comment-test"
   }
 }
 
+# Output the bucket name
 output "bucket_name" {
   description = "Name of the created S3 bucket"
   value       = aws_s3_bucket.demo.bucket
 }
 
-output "environment" {
-  description = "Deployment environment"
-  value       = var.environment
+output "bucket_arn" {
+  description = "ARN of the created S3 bucket"
+  value       = aws_s3_bucket.demo.arn
 }
