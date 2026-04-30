@@ -1,4 +1,4 @@
-# github-actions-lab7j
+# github-actions-lab7
 
 [![Terraform CI/CD](https://github.com/amakauzuegbunam7-cloud/github-actions-lab7/actions/workflows/terraform.yaml/badge.svg)]
 
